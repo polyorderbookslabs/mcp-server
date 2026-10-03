@@ -37,10 +37,10 @@
   "homepage": "https://polyorderbooks.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/poly-orderbooks/mcp-server.git"
+    "url": "git+https://github.com/polyorderbookslabs/mcp-server.git"
   },
   "bugs": {
-    "url": "https://github.com/poly-orderbooks/mcp-server/issues"
+    "url": "https://github.com/polyorderbookslabs/mcp-server/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.0.0",
