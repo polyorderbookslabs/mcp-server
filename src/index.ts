@@ -61,7 +61,8 @@ export function createServer(): McpServer {
             title: 'Search Polymarket markets',
             description:
                 'Find Polymarket markets by keyword. Start here — the other tools need a market slug, and slugs are not guessable. ' +
-                'Coverage is Polymarket crypto markets: up/down contracts at 5m, 15m and 4h, price thresholds like "bitcoin-above-80k", and related event markets. ' +
+                'Coverage spans Polymarket crypto and sports markets: crypto up/down contracts at 5m, 15m and 4h, price thresholds like "bitcoin-above-80k", and related event markets, plus sports markets. ' +
+                'Pass category=crypto or category=sports to pin a search to one archive; omit it to search both. ' +
                 'Resolved markets are excluded unless include_closed is true, which is usually what you want for historical analysis. ' +
                 'For a whole family of markets rather than one, search_series is more reliable than guessing slug patterns here.',
             inputSchema: z.object({
@@ -75,16 +76,21 @@ export function createServer(): McpServer {
                     .describe('Include markets that have already resolved. Set true for historical work.'),
                 end_date_min: z.string().optional().describe('ISO-8601, markets ending at or after this'),
                 end_date_max: z.string().optional().describe('ISO-8601, markets ending at or before this'),
+                category: z
+                    .enum(['crypto', 'sports'])
+                    .optional()
+                    .describe('"crypto" or "sports". Omit to search both archives merged by updated_at.'),
                 limit: z.number().int().min(1).max(100).optional().describe('Default 20')
             })
         },
-        async ({ search, include_closed, end_date_min, end_date_max, limit }) =>
+        async ({ search, include_closed, end_date_min, end_date_max, category, limit }) =>
             run(() =>
                 api.get('/v1/markets', {
                     search,
                     include_closed,
                     end_date_min,
                     end_date_max,
+                    category,
                     limit: limit ?? 20
                 })
             )
@@ -100,10 +106,15 @@ export function createServer(): McpServer {
                 'patterns with search_markets. Take the series slug, then use search_events to find its individual rounds.',
             inputSchema: z.object({
                 search: z.string().optional().describe('Substring, e.g. "btc-up-or-down" or "solana"'),
+                category: z
+                    .enum(['crypto', 'sports'])
+                    .optional()
+                    .describe('"crypto" or "sports". Omit to search both archives merged by updated_at.'),
                 limit: z.number().int().min(1).max(100).optional().describe('Default 20')
             })
         },
-        async ({ search, limit }) => run(() => api.get('/v1/series', { search, limit: limit ?? 20 }))
+        async ({ search, category, limit }) =>
+            run(() => api.get('/v1/series', { search, category, limit: limit ?? 20 }))
     );
 
     server.registerTool(
@@ -118,11 +129,17 @@ export function createServer(): McpServer {
                 search: z.string().optional().describe('Substring matched against slug and title'),
                 end_date_min: z.string().optional().describe('ISO-8601, events ending at or after this'),
                 end_date_max: z.string().optional().describe('ISO-8601, events ending at or before this'),
+                category: z
+                    .enum(['crypto', 'sports'])
+                    .optional()
+                    .describe('"crypto" or "sports". Omit to search both archives merged by updated_at.'),
                 limit: z.number().int().min(1).max(100).optional().describe('Default 20')
             })
         },
-        async ({ search, end_date_min, end_date_max, limit }) =>
-            run(() => api.get('/v1/events', { search, end_date_min, end_date_max, limit: limit ?? 20 }))
+        async ({ search, end_date_min, end_date_max, category, limit }) =>
+            run(() =>
+                api.get('/v1/events', { search, end_date_min, end_date_max, category, limit: limit ?? 20 })
+            )
     );
 
     server.registerTool(
