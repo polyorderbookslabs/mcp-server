@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * MCP server for PolyOrderbooks — historical Polymarket order books, prices and
- * liquidity at 1-second resolution.
+ * liquidity, captured natively at 250ms (queryable 250ms to 1d).
  *
  * Six tools rather than one per endpoint. A model works better with a few
  * task-shaped tools it can reason about than eleven thin HTTP wrappers, and the
  * descriptions carry the things that are not obvious from a schema: that order
  * book depth is forward-only, that binary markets go one-sided as they resolve,
- * and that a wide window at 1-second resolution returns an enormous amount.
+ * and that a wide window at fine resolution returns an enormous amount.
  */
 import { McpServer } from '@modelcontextprotocol/server';
 import { serveStdio } from '@modelcontextprotocol/server/stdio';

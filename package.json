@@ -1,7 +1,7 @@
 {
   "name": "@polyorderbooks/mcp-server",
   "version": "0.2.3",
-  "description": "MCP server for historical Polymarket order books, prices and liquidity \u2014 1-second L2 depth on resolved prediction markets.",
+  "description": "MCP server for historical Polymarket order books, prices and liquidity \u2014 full L2 depth captured at 250ms on resolved prediction markets.",
   "type": "module",
   "bin": {
     "polyorderbooks-mcp": "dist/index.js"
