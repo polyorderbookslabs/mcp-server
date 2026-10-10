@@ -1,7 +1,7 @@
 # PolyOrderbooks MCP Server
 
 Historical Polymarket **order book depth** for Claude, Cursor and any other MCP
-client — full L2 bid and ask ladders at 1-second resolution, with resolved
+client — full L2 bid and ask ladders at 250ms resolution, with resolved
 outcomes attached.
 
 [![npm](https://img.shields.io/npm/v/@polyorderbooks/mcp-server)](https://www.npmjs.com/package/@polyorderbooks/mcp-server)
@@ -45,7 +45,7 @@ Restart the client after editing the config; MCP servers are started at launch.
    random string.
 3. Put it in the `env` block of your MCP client config, as above.
 
-The free **Starter** plan queries at **1-second resolution** — the same as the
+The free **Starter** plan queries at **250ms resolution** — the same as the
 paid plans. What the paid plans add is a longer history window and a higher
 request allowance, not finer data. Starter is enough to answer a real question
 before you decide whether to pay for anything.
@@ -96,7 +96,7 @@ analysis that assumes two-sided books.
 the time; a 5-minute contract, 17%. Conclusions from one do not transfer to the
 other.
 
-**Responses get large quickly.** An hour at 1-second resolution is 3,600 buckets
+**Responses get large quickly.** An hour at 250ms resolution is 14,400 buckets
 per token, and a market has two. Keep windows narrow or resolution coarse, and
 page with the returned `next_cursor`.
 
@@ -130,7 +130,7 @@ They wrap Polymarket's own Gamma and CLOB APIs and do it well.
 | Live odds and current book | yes | no |
 | Placing trades | some | no |
 | Market metadata and resolution | yes | yes |
-| Price history | 1-minute, from Polymarket | 1-second |
+| Price history | 1-minute, from Polymarket | 250ms |
 | **Historical order book depth** | **not available** | **yes** |
 
 The difference is structural rather than a matter of effort. Polymarket's `/book`
@@ -155,7 +155,7 @@ Keys start with `pob_`; check for a trailing newline or a stray quote if you
 pasted from a terminal. If it looks right, call `get_usage` to confirm the key is
 active.
 
-**Responses truncated or slow** — an hour at 1-second resolution is 3,600 buckets
+**Responses truncated or slow** — an hour at 250ms resolution is 14,400 buckets
 per token, and a market has two. Narrow the window, or use `resolution: "1m"` and
 page with `next_cursor`.
 
